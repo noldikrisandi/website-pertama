@@ -1,0 +1,26 @@
+* {
+    text-align: center;
+}
+
+body {
+    background-color: salmon;
+    color: blue;
+}
+
+p {
+    color: black;
+}
+
+.ungu {
+    color: deeppink;
+}
+
+#hijau {
+    color: green;
+}
+
+h2 {
+    color: black;
+}
+
+.hitam {color: black;}
