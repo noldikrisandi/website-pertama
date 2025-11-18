@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Nilai - Pemrograman WEB 2</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <!-- Header -->
+        <div class="text-center mb-12">
+            <h1 class="text-4xl font-bold text-gray-800 mb-4">
+                <i class="fas fa-graduation-cap text-blue-600 mr-3"></i>
+                Sistem Penilaian Mahasiswa
+            </h1>
+            <p class="text-xl text-gray-600 mb-2">Pemrograman WEB 2</p>
+            <p class="text-lg text-gray-500">Semester 5 - Kelas Teknik Informatika A</p>
+        </div>
+
+        <!-- Search Section -->
+        <div class="bg-white rounded-2xl shadow-lg p-8 mb-8 max-w-2xl mx-auto">
+            <div class="flex flex-col space-y-4">
+                <div class="text-center mb-6">
+                    <h2 class="text-2xl font-semibold text-gray-800">Cari Nilai Anda</h2>
+                    <p class="text-gray-600 mt-2">Masukkan nama lengkap untuk melihat hasil penilaian</p>
+                </div>
+                
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <input 
+                        type="text" 
+                        id="searchInput"
+                        placeholder="Contoh: MUHAMMAD FIQRI"
+                        class="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg"
+                    >
+                    <button 
+                        id="searchBtn"
+                        class="px-8 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium text-lg flex items-center justify-center"
+                    >
+                        <i class="fas fa-search mr-2"></i>
+                        Cari Nilai
+                    </button>
+                </div>
+                <div id="errorMessage" class="text-red-500 text-center mt-2 hidden"></div>
+            </div>
+        </div>
+
+        <!-- Results Section -->
+        <div id="resultsSection" class="hidden max-w-4xl mx-auto">
+            <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
+                <!-- Student Info Header -->
+                <div class="bg-gradient-to-r from-blue-600 to-blue-700 text-white p-8">
+                    <h2 id="studentName" class="text-3xl font-bold mb-4"></h2>
+                    <div class="flex flex-wrap items-center gap-4">
+                        <div id="totalScore" class="text-2xl font-semibold px-6 py-3 rounded-full"></div>
+                        <div class="text-blue-100">
+                            <i class="fas fa-info-circle mr-2"></i>
+                            Detail penilaian dapat dilihat di bawah
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Scores Detail -->
+                <div class="p-8">
+                    <h3 class="text-2xl font-semibold text-gray-800 mb-6 border-b pb-3">Detail Penilaian</h3>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                        <div class="bg-blue-50 p-6 rounded-xl border border-blue-200">
+                            <h4 class="text-lg font-semibold text-blue-800 mb-3">Kesesuaian Design</h4>
+                            <div class="flex items-center justify-between">
+                                <span id="designScore" class="text-3xl font-bold text-blue-600"></span>
+                                <div class="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center">
+                                    <i class="fas fa-palette text-blue-600 text-xl"></i>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-green-50 p-6 rounded-xl border border-green-200">
+                            <h4 class="text-lg font-semibold text-green-800 mb-3">Kesesuaian Materi</h4>
+                            <div class="flex items-center justify-between">
+                                <span id="materiScore" class="text-3xl font-bold text-green-600"></span>
+                                <div class="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center">
+                                    <i class="fas fa-book text-green-600 text-xl"></i>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-orange-50 p-6 rounded-xl border border-orange-200">
+                            <h4 class="text-lg font-semibold text-orange-800 mb-3">Indikasi AI/Template</h4>
+                            <div class="flex items-center justify-between">
+                                <span id="aiScore" class="text-3xl font-bold text-orange-600"></span>
+                                <div class="w-16 h-16 rounded-full bg-orange-100 flex items-center justify-center">
+                                    <i class="fas fa-robot text-orange-600 text-xl"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Feedback Section -->
+                    <div class="bg-yellow-50 border border-yellow-200 rounded-xl p-6">
+                        <h4 class="text-xl font-semibold text-yellow-800 mb-4 flex items-center">
+                            <i class="fas fa-comment-dots mr-3"></i>
+                            Feedback Dosen
+                        </h4>
+                        <p id="feedbackText" class="text-yellow-700 text-lg leading-relaxed"></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reset Button -->
+            <div class="text-center mt-8">
+                <button 
+                    id="resetBtn"
+                    class="px-6 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors font-medium"
+                >
+                    <i class="fas fa-redo mr-2"></i>
+                    Cari Nilai Lain
+                </button>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="text-center mt-16 text-gray-500">
+            <p>&copy; 2024 Pemrograman WEB 2 - Teknik Informatika A</p>
+        </footer>
+    </div>
+
+    <script>
+        // Data nilai mahasiswa
+        const studentScores = [
+            {
+                nama: "MUHAMMAD FIQRI",
+                kesesuaianDesign: 50,
+                kesesuaianMateri: 45,
+                indikasiAiTemplate: 12,
+                total: 83,
+                feedback: "Bisa gunakan, tapi harus sesuai materi dan hapus yang tidak perlu yang diberikan AI"
+            },
+            {
+                nama: "Holy Grace Gapupu",
+                kesesuaianDesign: 40,
+                kesesuaianMateri: 5,
+                indikasiAiTemplate: 40,
+                total: 5,
+                feedback: "Harus lebih percaya diri dengan koding sendiri"
+            },
+            {
+                nama: "Angli Debora Yabintowe",
+                kesesuaianDesign: 40,
+                kesesuaianMateri: 5,
+                indikasiAiTemplate: 40,
+                total: 5,
+                feedback: "Harus lebih percaya diri dengan koding sendiri"
+            },
+            {
+                nama: "Alberto Chandra Karangan",
+                kesesuaianDesign: 40,
+                kesesuaianMateri: 50,
+                indikasiAiTemplate: 0,
+                total: 90,
+                feedback: "Sudah bagus, tinggal designnya belajar lebih dalam lagi"
+            },
+            {
+                nama: "ADRIANSYAH",
+                kesesuaianDesign: 47,
+                kesesuaianMateri: 45,
+                indikasiAiTemplate: 40,
+                total: 52,
+                feedback: "Bagus dalam menggunakan AI, bisa sesuai dengan materi"
+            },
+            {
+                nama: "Roland Parenta",
+                kesesuaianDesign: 48,
+                kesesuaianMateri: 5,
+                indikasiAiTemplate: 40,
+                total: 13,
+                feedback: "Harus lebih percaya diri dengan koding sendiri"
+            },
+            {
+                nama: "Mutiara igirisa",
+                kesesuaianDesign: 48,
+                kesesuaianMateri: 5,
+                indikasiAiTemplate: 40,
+                total: 13,
+                feedback: "Harus lebih percaya diri dengan koding sendiri"
+            },
+            {
+                nama: "AKBAR FATHAN MUBIN ODE",
+                kesesuaianDesign: 45,
+                kesesuaianMateri: 33,
+                indikasiAiTemplate: 40,
+                total: 38,
+                feedback: "Kurangi ketergantungan ke AI, lebih biasakan lagi koding sendiri saat belajar"
+            },
+            {
+                nama: "PUTU YOGA ANTARA",
+                kesesuaianDesign: 10,
+                kesesuaianMateri: 40,
+                indikasiAiTemplate: 0,
+                total: 50,
+                feedback: "Perdalam lagi belajar materinya"
+            },
+            {
+                nama: "agy syarifah ramadhani",
+                kesesuaianDesign: 48,
+                kesesuaianMateri: 5,
+                indikasiAiTemplate: 40,
+                total: 13,
+                feedback: "Harus lebih percaya diri dengan koding sendiri"
+            },
+            {
+                nama: "fadilla apriliani",
+                kesesuaianDesign: 40,
+                kesesuaianMateri: 5,
+                indikasiAiTemplate: 40,
+                total: 5,
+                feedback: "Harus lebih percaya diri dengan koding sendiri"
+            },
+            {
+                nama: "APRIANTO TOMBA",
+                kesesuaianDesign: 40,
+                kesesuaianMateri: 5,
+                indikasiAiTemplate: 40,
+                total: 5,
+                feedback: "Harus lebih percaya diri dengan koding sendiri"
+            },
+            {
+                nama: "Sanusi Syahrul",
+                kesesuaianDesign: 46,
+                kesesuaianMateri: 5,
+                indikasiAiTemplate: 30,
+                total: 21,
+                feedback: "Harus lebih percaya diri dengan koding sendiri"
+            },
+            {
+                nama: "I Wayan Alit Aimbawa",
+                kesesuaianDesign: 50,
+                kesesuaianMateri: 5,
+                indikasiAiTemplate: 30,
+                total: 25,
+                feedback: "Harus lebih sesuai materi lagi, kodingnya sudah rapi"
+            },
+            {
+                nama: "Muhammad Irham Haykal",
+                kesesuaianDesign: 50,
+                kesesuaianMateri: 50,
+                indikasiAiTemplate: 0,
+                total: 100,
+                feedback: "Bahasa manusianya dapat, AI tidak terdeteksi dan semuanya sesuai"
+            },
+            {
+                nama: "Fagijar sangadji",
+                kesesuaianDesign: 35,
+                kesesuaianMateri: 50,
+                indikasiAiTemplate: 0,
+                total: 85,
+                feedback: "Tinggal belajar design lagi"
+            },
+            {
+                nama: "Mersi Marsela",
+                kesesuaianDesign: 25,
+                kesesuaianMateri: 50,
+                indikasiAiTemplate: 0,
+                total: 75,
+                feedback: "Perdalam belajar style"
+            },
+            {
+                nama: "Rehan Galang Saputra",
+                kesesuaianDesign: 10,
+                kesesuaianMateri: 40,
+                indikasiAiTemplate: 0,
+                total: 50,
+                feedback: "Perdalam lagi belajar materinya"
+            },
+            {
+                nama: "Erika Afrinasari",
+                kesesuaianDesign: 25,
+                kesesuaianMateri: 50,
+                indikasiAiTemplate: 0,
+                total: 75,
+                feedback: "Perdalam belajar style"
+            },
+            {
+                nama: "Fahira Salsabila",
+                kesesuaianDesign: 39,
+                kesesuaianMateri: 5,
+                indikasiAiTemplate: 40,
+                total: 4,
+                feedback: "Harus lebih percaya diri dengan koding sendiri"
+            },
+            {
+                nama: "ALDI WIJAYA",
+                kesesuaianDesign: 39,
+                kesesuaianMateri: 5,
+                indikasiAiTemplate: 40,
+                total: 4,
+                feedback: "Harus lebih percaya diri dengan koding sendiri"
+            },
+            {
+                nama: "Syairah syafitrah islamiyah",
+                kesesuaianDesign: 7,
+                kesesuaianMateri: 5,
+                indikasiAiTemplate: 10,
+                total: 2,
+                feedback: "Harus lebih percaya diri dengan koding sendiri"
+            },
+            {
+                nama: "jesika anastasia",
+                kesesuaianDesign: 40,
+                kesesuaianMateri: 5,
+                indikasiAiTemplate: 40,
+                total: 5,
+                feedback: "Harus lebih percaya diri dengan koding sendiri"
+            },
+            {
+                nama: "moh riyad hunawa",
+                kesesuaianDesign: 15,
+                kesesuaianMateri: 5,
+                indikasiAiTemplate: 18,
+                total: 2,
+                feedback: "Harus lebih percaya diri dengan koding sendiri"
+            },
+            {
+                nama: "NIKANOR ROBIKA SINDANG",
+                kesesuaianDesign: 0,
+                kesesuaianMateri: 0,
+                indikasiAiTemplate: 0,
+                total: 0,
+                feedback: "Tidak ada kodingnya"
+            },
+            {
+                nama: "Owen Parantean Kalesu",
+                kesesuaianDesign: 0,
+                kesesuaianMateri: 0,
+                indikasiAiTemplate: 0,
+                total: 0,
+                feedback: "Tidak ada kodingnya"
+            }
+        ];
+
+        // DOM Elements
+        const searchInput = document.getElementById('searchInput');
+        const searchBtn = document.getElementById('searchBtn');
+        const errorMessage = document.getElementById('errorMessage');
+        const resultsSection = document.getElementById('resultsSection');
+        const studentName = document.getElementById('studentName');
+        const totalScore = document.getElementById('totalScore');
+        const designScore = document.getElementById('designScore');
+        const materiScore = document.getElementById('materiScore');
+        const aiScore = document.getElementById('aiScore');
+        const feedbackText = document.getElementById('feedbackText');
+        const resetBtn = document.getElementById('resetBtn');
+
+        // Fungsi untuk mendapatkan warna berdasarkan nilai
+        function getScoreColor(score) {
+            if (score >= 80) return 'bg-green-100 text-green-800 border-green-300';
+            if (score >= 60) return 'bg-yellow-100 text-yellow-800 border-yellow-300';
+            if (score >= 40) return 'bg-orange-100 text-orange-800 border-orange-300';
+            return 'bg-red-100 text-red-800 border-red-300';
+        }
+
+        // Fungsi pencarian
+        function handleSearch() {
+            const searchTerm = searchInput.value.trim();
+            errorMessage.classList.add('hidden');
+
+            if (!searchTerm) {
+                errorMessage.textContent = 'Masukkan nama untuk mencari nilai';
+                errorMessage.classList.remove('hidden');
+                return;
+            }
+
+            const foundStudent = studentScores.find(student =>
+                student.nama.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+
+            if (foundStudent) {
+                displayStudentResult(foundStudent);
+            } else {
+                errorMessage.textContent = 'Nama tidak ditemukan dalam database. Pastikan nama ditulis dengan benar.';
+                errorMessage.classList.remove('hidden');
+            }
+        }
+
+        // Fungsi menampilkan hasil
+        function displayStudentResult(student) {
+            studentName.textContent = student.nama;
+            
+            // Set total score dengan warna
+            totalScore.textContent = `Total Nilai: ${student.total}`;
+            totalScore.className = `inline-flex items-center px-6 py-3 rounded-full text-2xl font-bold ${getScoreColor(student.total)} border-2`;
+            
+            // Set individual scores
+            designScore.textContent = `${student.kesesuaianDesign}`;
+            materiScore.textContent = `${student.kesesuaianMateri}`;
+            aiScore.textContent = `${student.indikasiAiTemplate}`;
+            feedbackText.textContent = student.feedback;
+
+            // Tampilkan section hasil
+            resultsSection.classList.remove('hidden');
+            
+            // Scroll ke hasil
+            resultsSection.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Fungsi reset
+        function resetSearch() {
+            searchInput.value = '';
+            resultsSection.classList.add('hidden');
+            errorMessage.classList.add('hidden');
+            searchInput.focus();
+        }
+
+        // Event Listeners
+        searchBtn.addEventListener('click', handleSearch);
+        resetBtn.addEventListener('click', resetSearch);
+
+        searchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                handleSearch();
+            }
+        });
+
+        // Focus pada input saat halaman dimuat
+        window.addEventListener('load', () => {
+            searchInput.focus();
+        });
+    </script>
+</body>
+</html>
